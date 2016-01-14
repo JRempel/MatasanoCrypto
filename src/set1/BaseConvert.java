@@ -12,6 +12,8 @@ public class BaseConvert {
 
 	public static final Character[] hexOrder = new Character[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a',
 			'b', 'c', 'd', 'e', 'f' };
+	
+	public static enum ReturnType {STRING, BITSETANDINDEX};
 
 	public static int getHexValue(char value) {
 		if (value > 57)
@@ -34,7 +36,9 @@ public class BaseConvert {
 		return value;
 	}
 
-	public static String hexToBase64(String hex) throws Exception {
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T hexToBase64(String hex, ReturnType type) throws Exception {
 		hex = hex.toLowerCase();
 		// check for a non-hex string
 		if (hex.length() % 2 != 0 || hex.contains("[^a-f0-9]"))
@@ -77,6 +81,8 @@ public class BaseConvert {
 					}
 				}
 			}
+			if (type.equals(ReturnType.BITSETANDINDEX))
+				return (T) new BitSetAndIndex(bits, index);
 			// read 6 bits to integer value for base64-value lookup
 			base10 = 0;
 			for (int i = 0; i < index; i++) {
@@ -87,7 +93,7 @@ public class BaseConvert {
 				}
 				base10 <<= 1;
 			}
-			return base64;
+			return (T) base64;
 		}
 	}
 
@@ -140,7 +146,7 @@ public class BaseConvert {
 				}
 				base10 <<= 1;
 			}
-			return hex;
+			return (String) hex;
 		}
 	}
 }
