@@ -76,3 +76,5 @@ tmp/
 local.properties
 .settings/
 .loadpath
+
+*.txt
