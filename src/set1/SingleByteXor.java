@@ -3,7 +3,6 @@ package set1;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class SingleByteXor {
 
@@ -126,7 +125,7 @@ public class SingleByteXor {
 		ArrayList<String> possible = new ArrayList<String>();
 
 		// Iterate through possible XOR'd characters
-		for (Map.Entry<Character, Double> entry : chars.entrySet()) {
+		for (Integer i = 0; i < 256; i++) {
 
 			// Reset Variables
 			output = "";
@@ -136,7 +135,9 @@ public class SingleByteXor {
 
 			// Create a hex string with the possible XOR'd value which is the
 			// same length as the input
-			xor = String.format("%04x", (int) entry.getKey()).replaceAll("00", "");
+			xor = Integer.toHexString(i);
+			if (i < 16)
+				xor = "0" + xor;
 			while (xor.length() != hex.length()) {
 				xor = xor + xor.substring(0, 2);
 			}
@@ -148,7 +149,7 @@ public class SingleByteXor {
 			output = three.toString(16);
 
 			// Get the output ASCII string
-			for (int j = 0; j < output.length(); j += 2) {
+			for (int j = 0; j + 2 < output.length(); j += 2) {
 				String str = output.substring(j, j + 2);
 				sb.append((char) Integer.parseInt(str, 16));
 			}
@@ -175,10 +176,7 @@ public class SingleByteXor {
 
 		// Score possible strings based on character frequency
 		for (String s : possible) {
-			tempValue = 0.0;
-			for (int i = 0; i < s.length(); i++) {
-				tempValue += chars.get(s.charAt(i));
-			}
+			tempValue = getWeight(s);
 			if (tempValue > value) {
 				output = s;
 				value = tempValue;
@@ -187,5 +185,13 @@ public class SingleByteXor {
 
 		// Return the most likely string
 		return output;
+	}
+	
+	public static double getWeight(String input) {
+		double weight = 0.0;
+		for (int i = 0; i < input.length(); i++) {
+			weight += chars.get(input.charAt(i));
+		}
+		return weight;
 	}
 }
